@@ -3,4 +3,5 @@ set backtrace limit 32
 load
 monitor reset
 break reset_handler
+monitor halt
 continue

@@ -79,9 +79,9 @@ fn main() -> ! {
 
     loop {
         led.set_high();
-        delay(2_000_000);
+        delay(2_000_0);
 
         led.set_low();
-        delay(6_000_000);
+        delay(6_000_0);
     }
 }

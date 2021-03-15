@@ -32,7 +32,7 @@ SECTIONS
          * if we ever used interrupts or hit a fault, which we don't,
          * in our example.
          */
-         . = 0x0dc;
+         . = 0x080000dc;
     } > FLASH
 
     PROVIDE(_stext = ADDR(.vector_table) + SIZEOF(.vector_table));

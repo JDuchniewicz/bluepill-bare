@@ -4,10 +4,7 @@
 #![allow(dead_code)]
 
 pub mod gpio {
-    use core::{
-        ops::{BitAndAssign, BitOrAssign},
-        sync::atomic::{AtomicBool, Ordering::SeqCst},
-    };
+    use core::sync::atomic::{AtomicBool, Ordering::SeqCst};
 
     pub struct Pin(u8);
 
@@ -52,7 +49,7 @@ pub mod gpio {
         pub fn set_high(&mut self) {
             unsafe {
                 let mut mask = core::ptr::read_volatile(GPIOC_ODR);
-                mask.bitor_assign(1 << (self.0 as u32));
+                mask |= (1 << (self.0 as u32));
                 core::ptr::write_volatile(GPIOC_ODR, mask);
             }
         }
@@ -60,7 +57,7 @@ pub mod gpio {
         pub fn set_low(&mut self) {
             unsafe {
                 let mut mask = core::ptr::read_volatile(GPIOC_ODR);
-                mask.bitand_assign(1 << (self.0 as u32));
+                mask &= !(1 << (self.0 as u32)); // TODO: let not lighting seems like always pulled up??
                 core::ptr::write_volatile(GPIOC_ODR, mask);
             }
         }
