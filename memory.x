@@ -2,7 +2,7 @@
 MEMORY
 {
     BOOT_FLASH : ORIGIN = 0x08000000, LENGTH = 4K
-    APP_FLASH  : ORIGIN = 0x08004000, LENGTH = 60K
+    APP_FLASH  : ORIGIN = 0x08001000, LENGTH = 60K
     RAM        : ORIGIN = 0x20000000, LENGTH = 20K
 }
 
@@ -38,7 +38,7 @@ SECTIONS
          * if we ever used interrupts or hit a fault, which we don't,
          * in our example.
          */
-         . = 0x080040dc;
+         . = 0x080010dc;
     } > APP_FLASH
 
     PROVIDE(_stext = ADDR(.vector_table) + SIZEOF(.vector_table));
