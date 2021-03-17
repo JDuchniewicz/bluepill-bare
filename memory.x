@@ -1,9 +1,15 @@
 /* Linker script for the STM32F103C8T6 */
 MEMORY
 {
-    FLASH : ORIGIN = 0x08000000, LENGTH = 64K
-    RAM   : ORIGIN = 0x20000000, LENGTH = 20K
+    BOOT_FLASH : ORIGIN = 0x08000000, LENGTH = 4K
+    APP_FLASH  : ORIGIN = 0x08004000, LENGTH = 60K
+    RAM        : ORIGIN = 0x20000000, LENGTH = 20K
 }
+
+__bootflash_start__ = ORIGIN(BOOT_FLASH);
+__bootflash_size__ = LENGTH(BOOT_FLASH);
+__appflash_start__ = ORIGIN(APP_FLASH);
+__appflash_size__ = LENGTH(APP_FLASH);
 
 EXTERN(__RESET_VECTOR)
 
@@ -12,9 +18,9 @@ SECTIONS
 {
     PROVIDE(_stack_start = ORIGIN(RAM) + LENGTH(RAM));
 
-    /* ## Sections in FLASH */
+    /* ## Sections in APP_FLASH */
     /* ### Vector table */
-    .vector_table ORIGIN(FLASH) :
+    .vector_table ORIGIN(APP_FLASH) :
     {
         /* Initial Stack Pointer (SP) value */
         LONG(_stack_start);
@@ -32,8 +38,8 @@ SECTIONS
          * if we ever used interrupts or hit a fault, which we don't,
          * in our example.
          */
-         . = 0x080000dc;
-    } > FLASH
+         . = 0x080040dc;
+    } > APP_FLASH
 
     PROVIDE(_stext = ADDR(.vector_table) + SIZEOF(.vector_table));
 
@@ -43,7 +49,7 @@ SECTIONS
         *(.text .text.*);
         . = ALIGN(4);
         __etext = .;
-    } > FLASH
+    } > APP_FLASH
 
     /* ### .rodata */
     .rodata __etext : ALIGN(4)
@@ -55,7 +61,7 @@ SECTIONS
            section will have the correct alignment. */
         . = ALIGN(4);
         __erodata = .;
-    } > FLASH
+    } > APP_FLASH
 
     /* ## Sections in RAM */
     /* ### .data */
@@ -88,10 +94,6 @@ SECTIONS
         *(.uninit .uninit.*);
         . = ALIGN(4);
     } > RAM
-
-    /* Place the heap right after `.uninit` TODO: no need for heap lol*/
-    . = ALIGN(4);
-    __sheap = .;
 
     /* ## Discarded sections */
     /DISCARD/ :
